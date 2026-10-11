@@ -10,6 +10,51 @@
 ![Audio](https://img.shields.io/badge/audio-MP3%20%E2%86%92%20A2DP-green)
 ![Daya](https://img.shields.io/badge/daya-%C2%B11.5%20watt-yellow)
 
+🇮🇩 [Bahasa Indonesia](#-fitur) · 🇬🇧 [English](#-english-quick-start)
+
+---
+
+## 🇬🇧 English Quick Start
+
+**What it does:** streams live Quran radio (MP3) from the internet and plays it **24/7** on any
+Bluetooth speaker, using two ESP32 boards and 4 jumper wires. No laptop, no phone, no SD card,
+about 1.5 W of power.
+
+**Why two boards?** A single ESP32 can't do it reliably: WiFi + MP3 decoding + Bluetooth A2DP
+runs out of RAM and crashes. The **ESP32-S3** (8 MB PSRAM) handles WiFi and decoding but has
+**no Bluetooth Classic**. A classic **ESP32** handles Bluetooth only. They talk over I2S.
+
+| You need | Notes |
+|---|---|
+| ESP32-S3 (N16R8 recommended) | Streams and decodes MP3 |
+| Classic ESP32 (WROOM-32, e.g. LilyGO T-Display) | Sends audio to the speaker. **S2/S3/C3/C6 won't work** (no A2DP) |
+| 4 jumper wires + 5V 1A charger | |
+
+**Wiring**
+
+| ESP32-S3 | → | T-Display | (or ESP32 DevKit) |
+|---|---|---|---|
+| GPIO 4 (BCK) | → | GPIO 26 | GPIO 14 |
+| GPIO 5 (WS) | → | GPIO 25 | GPIO 15 |
+| GPIO 6 (DATA) | → | GPIO 33 | GPIO 32 |
+| GND | ↔ | GND | GND |
+
+**Setup**
+1. Arduino IDE + **esp32 core 2.0.17** (3.x is not compatible with ESP32-A2DP).
+2. Install [arduino-audio-tools](https://github.com/pschatzmann/arduino-audio-tools),
+   [arduino-libhelix](https://github.com/pschatzmann/arduino-libhelix) and
+   [ESP32-A2DP](https://github.com/pschatzmann/ESP32-A2DP) as ZIP libraries.
+3. `s3_streamer.ino`: set your WiFi SSID and password, then upload to the S3
+   (ESP32S3 Dev Module, 16MB flash, OPI PSRAM, Huge APP partition).
+4. `bt_bridge.ino`: set part of your speaker's Bluetooth name, then upload to the classic ESP32
+   (ESP32 Dev Module, Huge APP partition).
+5. Connect the wires. The speaker starts playing.
+
+**Auto-recovery:** WiFi drops, stream stalls and speaker disconnects all recover automatically.
+
+> Use an **`http://` MP3 stream with no redirect** for best stability. The full guide below is in
+> Indonesian. Use your browser's translate feature for the details.
+
 ---
 
 ## ✨ Fitur
